@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from rest_framework import generics
-from .serializers import RoomSerializer
+from rest_framework import generics, status # retornar o código de status nas respostas
+from .serializers import RoomSerializer, CreateRoomSerializer
 from .models import Room
+from rest_framework.views import APIView
+from rest_framework.response import Response # Mandar resposta customizada
 
 # Create your views here.
 class RoomView(generics.ListAPIView):
@@ -10,3 +12,31 @@ class RoomView(generics.ListAPIView):
     queryset = Room.objects.all()
     # A classe que representa o formato que deve ser retornado os dados
     serializer_class = RoomSerializer
+
+
+class CreateRoomView(APIView):
+    serializer_class = CreateRoomSerializer
+
+    def post(self, request, format=None):
+        if not self.request.session.exists(self.request.session.session_key):
+            self.request.session.create()
+        
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            guest_can_pause = serializer.data.get('guest_can_pause')
+            votes_to_skip = serializer.data.get('votes_to_skip')
+            host = self.request.session.session_key # Chave de sessão do host
+            queryset = Room.objects.filter(host=host) # procura se o host que ta criando a sala tem alguma sala criada
+            if queryset.exists(): # Se o host tiver mais de uma sala ela é atualizada com os dados que ele envia
+                room = queryset[0]
+                room.guest_can_pause = guest_can_pause
+                room.votes_to_skip = votes_to_skip
+                room.save(update_fields=['guest_can_pause', 'votes_to_skip'])
+                return Response(RoomSerializer(room).data, status=status.HTTP_200_OK)
+            else:
+                room = Room(host=host, guest_can_pause=guest_can_pause, votes_to_skip=votes_to_skip)
+                room.save()
+                return Response(RoomSerializer(room).data, status=status.HTTP_201_CREATED)
+            
+        return Response({'Bad Request': 'Invalid data...'}, status=status.HTTP_400_BAD_REQUEST)
+                

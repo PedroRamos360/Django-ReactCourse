@@ -18,7 +18,7 @@ def generate_unique_code():
 # Create your models here.
 class Room(models.Model):
     # Código para entrar na sala, único: duas salas não podem ter o mesmo código
-    code = models.CharField(max_length=8, default='', unique=True)
+    code = models.CharField(max_length=8, default=generate_unique_code, unique=True)
     # Informação que identifica o usuário, único: um host não pode ter multíplas salas
     host = models.CharField(max_length=50, unique=True)
     # Booleano que diz se os convidados tem permissão para pausar a música
