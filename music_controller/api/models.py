@@ -11,7 +11,9 @@ def generate_unique_code():
         code = ''.join(random.choices(string.ascii_uppercase, k=length))
         # Filtra todas os objetos de Room que tem o código gerado e retorna o número de salas que tem ele
         if Room.objects.filter(code=code).count == 0:
-            return code
+            break
+    
+    return code
 
 # Modelos para banco de dados
 # "Fat models thin views" colocar maior parte da lógica da aplicação nos models

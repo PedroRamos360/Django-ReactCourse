@@ -14,7 +14,7 @@ class RoomView(generics.ListAPIView):
     serializer_class = RoomSerializer
 
 
-class CreateRoomView(APIView):
+class CreateRoomView(generics.CreateAPIView):
     serializer_class = CreateRoomSerializer
 
     def post(self, request, format=None):
