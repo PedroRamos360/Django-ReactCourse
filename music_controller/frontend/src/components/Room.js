@@ -18,7 +18,7 @@ export default class Room extends Component {
 			this.setState({
 				votesToSkip: data.votes_to_skip,
 				guestCanPause: data.guest_can_pause,
-				isHost: data.isHost
+				isHost: data.is_host
 			})
 		});
 	}
