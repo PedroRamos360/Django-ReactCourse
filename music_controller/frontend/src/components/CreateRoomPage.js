@@ -16,6 +16,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 
 export default class CreateRoomPage extends Component {
+	defaultVotes = 2;
 	constructor(props) {
 		super(props); // chama o construtor de component
 		this.state = {
@@ -55,11 +56,17 @@ export default class CreateRoomPage extends Component {
 	}
 
     render() {
+		if (this.props.title == null) {
+			this.props.title = 'Create a Room';
+		}
+		// if (this.props.votesToSkip != null) {
+		// 	this.defaultVotes = this.props.votesToSkip;
+		// }
 		return (
 			<Grid container spacing={1}>
 					<Grid item xs={12} align="center">
 						<Typography component='h4' variant='h4'>
-							Create a Room
+							{this.props.title}
 						</Typography>
 					</Grid>
 					<Grid item xs={12} align="center">

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Grid, Button, Typography } from "@material-ui/core";
 import { Settings } from '@material-ui/icons';
+import CreateRoomPage from './CreateRoomPage';
 
 export default class Room extends Component {
 	constructor(props) {
@@ -16,6 +17,7 @@ export default class Room extends Component {
 		this.leaveButtonPressed = this.leaveButtonPressed.bind(this);
 		this.updateShowSettings = this.updateShowSettings.bind(this);
 		this.renderSettingsButton = this.renderSettingsButton.bind(this);
+		this.renderSettings = this.renderSettings.bind(this);
 	}
 
   	getRoomDetails() {
@@ -53,6 +55,28 @@ export default class Room extends Component {
 		});
 	}
 
+	renderSettings() {
+		return (
+			<Grid container spacing={1}>
+				<Grid item xs={12} align='center'>
+					<CreateRoomPage
+						update={true}
+						title={'Update Room'}
+						votesToSkip={this.state.votesToSkip}
+						guestCanPause={this.state.guestCanPause}
+						roomCode={this.roomCode}
+						updateCallback={() => {}}
+					/>
+				</Grid>
+				<Grid item xs={12} align='center'>
+				<Button variant='contained' color='secondary' onClick={() => this.updateShowSettings(false)}>
+					Close
+				</Button>
+				</Grid>
+			</Grid>
+		);
+	}
+
 	renderSettingsButton() {
 		return (
 			<Grid item xs={12} align='center'>
@@ -64,6 +88,9 @@ export default class Room extends Component {
 	}
 
 	render() {
+		if (this.state.showSettings) {
+			return this.renderSettings()
+		}
 		return (
 			<Grid container spacing={1}>
 			<Grid item xs={12} align="center">
