@@ -16,17 +16,26 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 
 export default class CreateRoomPage extends Component {
-	defaultVotes = 2;
+	static defaultProps = {
+		votesToSkip: 2,
+		guestCanPause: true,
+		update: false,
+		roomCode: null,
+		updateCallback: () => {}
+	}
 	constructor(props) {
 		super(props); // chama o construtor de component
 		this.state = {
-			guestCanPause: true,
-			votesToSkip: 2
+			guestCanPause: this.props.guestCanPause,
+			votesToSkip: this.props.votesToSkip,
+			errorMsg: '',
+			successMsg: '',
 		}
 
 		this.handleVotesChange = this.handleVotesChange.bind(this);
 		this.handleGuestCanPauseChange = this.handleGuestCanPauseChange.bind(this);
 		this.handleRoomButtonPressed = this.handleRoomButtonPressed.bind(this);
+		this.handleUpdateButtonPressed = this.handleUpdateButtonPressed.bind(this);
 	}
 
 	handleVotesChange(e) {
@@ -55,70 +64,108 @@ export default class CreateRoomPage extends Component {
 			.then(data => this.props.history.push('/room/' + data.code));
 	}
 
-    render() {
-		if (this.props.title == null) {
-			this.props.title = 'Create a Room';
+	handleUpdateButtonPressed() {
+		const requestOptions = {
+			method: 'PATCH',
+			headers: {'Content-Type': 'application/json'},
+			body: JSON.stringify({
+				votes_to_skip: this.state.votesToSkip,
+				guest_can_pause: this.state.guestCanPause,
+				code: this.props.roomCode
+			})
 		}
-		// if (this.props.votesToSkip != null) {
-		// 	this.defaultVotes = this.props.votesToSkip;
-		// }
+		fetch('/api/update-room', requestOptions)
+			.then(response => {
+				if (response.ok) {
+					this.setState({
+						successMsg: 'Room updated successfully'
+					});
+				} else {
+					this.setState({
+						erroMsg: 'Error updating room...'
+					});
+				}
+			}
+		);
+	}
+
+	renderCreateButtons() {
 		return (
 			<Grid container spacing={1}>
-					<Grid item xs={12} align="center">
-						<Typography component='h4' variant='h4'>
-							{this.props.title}
-						</Typography>
-					</Grid>
-					<Grid item xs={12} align="center">
-						<FormControl component='fieldset'>
-							<FormHelperText>
-									<div align='center'>
-										Guest control of playback state
-									</div>
-							</FormHelperText>
-							<RadioGroup
-									row
-									defaultValue='true'
-									onChange={this.handleGuestCanPauseChange}
-							>
-									<FormControlLabel
-										value='true'
-										control={<Radio color='primary'/>}
-										label='Play/Pause'
-										labelPlacement='bottom'
-									/>
-									<FormControlLabel
-										value='false'
-										control={<Radio color='secondary'/>}
-										label='No control'
-										labelPlacement='bottom'
-									/>
-							</RadioGroup>
-						</FormControl>
-					</Grid>
-					<Grid item xs={12} align='center'>
-						<FormControl>
-							<TextField
-									required={true}
-									type='number'
-									onChange={this.handleVotesChange}
-									defaultValue={this.defaultVotes}
-									inputProps={{
-										min: 1,
-										style: {textAlign: 'center'}
-									}}
-							/>
-							<FormHelperText>
-									<div align='center'>Votes required to skip song</div>
-							</FormHelperText>
-						</FormControl>
-					</Grid>
-					<Grid item xs={12} align='center'>
-						<Button color='primary' variant='contained' onClick={this.handleRoomButtonPressed}>Create a Room</Button>
-					</Grid>
-					<Grid item xs={12} align='center'>
-						<Button color='secondary' variant='contained' to="/" component={Link}>Back</Button>
-					</Grid>
+				<Grid item xs={12} align='center'>
+					<Button color='primary' variant='contained' onClick={this.handleRoomButtonPressed}>Create a Room</Button>
+				</Grid>
+				<Grid item xs={12} align='center'>
+					<Button color='secondary' variant='contained' to="/" component={Link}>Back</Button>
+				</Grid>
+			</Grid>
+		)
+	}
+
+	renderUpdateButtons() {
+		return (
+			<Grid item xs={12} align='center'>
+				<Button color='primary' variant='contained' onClick={this.handleUpdateButtonPressed}>Update Room</Button>
+			</Grid>
+		)
+	}
+
+	render() {
+		const title = this.props.update ? 'Update Room' : 'Create a Room';
+		return (
+			<Grid container spacing={1}>
+				<Grid item xs={12} align="center">
+					<Typography component='h4' variant='h4'>
+						{title}
+					</Typography>
+				</Grid>
+				<Grid item xs={12} align="center">
+					<FormControl component='fieldset'>
+						<FormHelperText>
+								<div align='center'>
+									Guest control of playback state
+								</div>
+						</FormHelperText>
+						<RadioGroup
+								row
+								defaultValue={`${this.state.guestCanPause}`}
+								onChange={this.handleGuestCanPauseChange}
+						>
+								<FormControlLabel
+									value='true'
+									control={<Radio color='primary'/>}
+									label='Play/Pause'
+									labelPlacement='bottom'
+								/>
+								<FormControlLabel
+									value='false'
+									control={<Radio color='secondary'/>}
+									label='No control'
+									labelPlacement='bottom'
+								/>
+						</RadioGroup>
+					</FormControl>
+				</Grid>
+				<Grid item xs={12} align='center'>
+					<FormControl>
+						<TextField
+								required={true}
+								type='number'
+								onChange={this.handleVotesChange}
+								defaultValue={this.state.votesToSkip}
+								inputProps={{
+									min: 1,
+									style: {textAlign: 'center'}
+								}}
+						/>
+						<FormHelperText>
+								<div align='center'>Votes required to skip song</div>
+						</FormHelperText>
+					</FormControl>
+				</Grid>
+				{this.props.update
+				 	? this.renderUpdateButtons()
+					: this.renderCreateButtons()}
 			</Grid>
 		);
 	}

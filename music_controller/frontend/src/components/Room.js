@@ -61,7 +61,6 @@ export default class Room extends Component {
 				<Grid item xs={12} align='center'>
 					<CreateRoomPage
 						update={true}
-						title={'Update Room'}
 						votesToSkip={this.state.votesToSkip}
 						guestCanPause={this.state.guestCanPause}
 						roomCode={this.roomCode}
