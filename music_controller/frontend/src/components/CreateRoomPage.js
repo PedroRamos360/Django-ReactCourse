@@ -10,10 +10,8 @@ import FormControl from '@material-ui/core/FormControl';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-
-
-
-
+import { Collapse } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert'
 
 export default class CreateRoomPage extends Component {
 	static defaultProps = {
@@ -85,8 +83,8 @@ export default class CreateRoomPage extends Component {
 						erroMsg: 'Error updating room...'
 					});
 				}
-			}
-		);
+				this.props.updateCallback();
+			});
 	}
 
 	renderCreateButtons() {
@@ -115,6 +113,21 @@ export default class CreateRoomPage extends Component {
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={12} align="center">
+					<Collapse in={this.state.errorMsg != '' || this.state.successMsg != ''}>
+						{this.state.successMsg != ''
+							? <Alert
+								severity='success'
+								onClose={() => {this.setState({ successMsg: '' })}}
+							>
+								{this.state.successMsg}
+							</Alert>
+							: <Alert
+								severity='error'
+								onClose={() => {this.setState({ errorMsg: '' })}}
+							>
+								{this.state.errorMsg}
+							</Alert>}
+					</Collapse>
 					<Typography component='h4' variant='h4'>
 						{title}
 					</Typography>
@@ -128,7 +141,7 @@ export default class CreateRoomPage extends Component {
 						</FormHelperText>
 						<RadioGroup
 								row
-								defaultValue={`${this.state.guestCanPause}`}
+								defaultValue={`${this.props.guestCanPause}`}
 								onChange={this.handleGuestCanPauseChange}
 						>
 								<FormControlLabel
