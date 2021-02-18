@@ -78,6 +78,7 @@ def execute_spotify_api_request(session_id, endpoint, post_=False, put_=False):
 
 	response = get(BASE_URL + endpoint, {}, headers=headers)
 	try:
-		return response.json()
+		# Erro na conversão da responsta para .json()
+		return { 'Response': response.context }
 	except:
 		return {'Error': 'Issue with request'}
