@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Grid, Button, Typography } from "@material-ui/core";
 import { Settings } from '@material-ui/icons';
 import CreateRoomPage from './CreateRoomPage';
+import MusicPlayer from './MusicPlayer';
 
 export default class Room extends Component {
 	constructor(props) {
@@ -21,8 +22,8 @@ export default class Room extends Component {
 		this.renderSettings = this.renderSettings.bind(this);
 		this.getRoomDetails = this.getRoomDetails.bind(this);
 		this.authenticateSpotify = this.authenticateSpotify.bind(this);
+		this.getCurrentSong = this.getCurrentSong.bind(this);
 		this.getRoomDetails();
-		this.getCurrentSong();
 	}
 
 	componentDidMount() {
@@ -134,22 +135,22 @@ export default class Room extends Component {
 		}
 		return (
 			<Grid container spacing={1}>
-			<Grid item xs={12} align="center">
-				<Typography variant="h4" component="h4">
-					Code: {this.roomCode}
-				</Typography>
-			</Grid>
-			{this.state.song}
-			{ this.state.isHost ? this.renderSettingsButton() : null }
-			<Grid item xs={12} align="center">
-				<Button
-					variant="contained"
-					color="secondary"
-					onClick={this.leaveButtonPressed}
-				>
-					Leave Room
-				</Button>
-			</Grid>
+				<Grid item xs={12} align="center">
+					<Typography variant="h4" component="h4">
+						Code: {this.roomCode}
+					</Typography>
+				</Grid>
+				<MusicPlayer {...this.state.song}/>
+				{ this.state.isHost ? this.renderSettingsButton() : null }
+				<Grid item xs={12} align="center">
+					<Button
+						variant="contained"
+						color="secondary"
+						onClick={this.leaveButtonPressed}
+					>
+						Leave Room
+					</Button>
+				</Grid>
 			</Grid>
 		);
 	}
