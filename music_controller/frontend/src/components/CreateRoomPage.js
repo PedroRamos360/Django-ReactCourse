@@ -139,24 +139,45 @@ export default class CreateRoomPage extends Component {
 									Guest control of playback state
 								</div>
 						</FormHelperText>
-						<RadioGroup
-								row
-								defaultValue={`${this.props.guestCanPause}`}
-								onChange={this.handleGuestCanPauseChange}
-						>
-								<FormControlLabel
-									value='true'
-									control={<Radio color='primary'/>}
-									label='Play/Pause'
-									labelPlacement='bottom'
-								/>
-								<FormControlLabel
-									value='false'
-									control={<Radio color='secondary'/>}
-									label='No control'
-									labelPlacement='bottom'
-								/>
-						</RadioGroup>
+						{ window.matchMedia("(max-width: 600px)").matches ? (
+							<RadioGroup
+									defaultValue={`${this.props.guestCanPause}`}
+									onChange={this.handleGuestCanPauseChange}
+							>
+									<FormControlLabel
+										value='true'
+										control={<Radio color='primary'/>}
+										label='Play/Pause'
+										labelPlacement='bottom'
+									/>
+									<FormControlLabel
+										value='false'
+										control={<Radio color='secondary'/>}
+										label='No control'
+										labelPlacement='bottom'
+									/>
+							</RadioGroup>
+						) : (
+							<RadioGroup
+									row
+									defaultValue={`${this.props.guestCanPause}`}
+									onChange={this.handleGuestCanPauseChange}
+							>
+									<FormControlLabel
+										value='true'
+										control={<Radio color='primary'/>}
+										label='Play/Pause'
+										labelPlacement='bottom'
+									/>
+									<FormControlLabel
+										value='false'
+										control={<Radio color='secondary'/>}
+										label='No control'
+										labelPlacement='bottom'
+									/>
+							</RadioGroup>
+						)}
+
 					</FormControl>
 				</Grid>
 				<Grid item xs={12} align='center'>

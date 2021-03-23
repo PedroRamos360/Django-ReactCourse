@@ -40,17 +40,32 @@ export default class HomePage extends Component {
 				</Typography>
 			</Grid>
 			<Grid item xs={12} align="center">
-				<ButtonGroup disableElevation variant="contained" color="primary">
-					<Button color="primary" to="/join" component={Link}>
-					Join a Room
-					</Button>
-					<Button color="default" to="/info" component={Link}>
-					Info
-					</Button>
-					<Button color="secondary" to="/create" component={Link}>
-					Create a Room
-					</Button>
-				</ButtonGroup>
+				{ window.matchMedia("(max-width: 600px)").matches ? (
+					<ButtonGroup disableElevation variant="contained" color="primary" orientation='vertical'>
+						<Button color="primary" to="/join" component={Link}>
+							Join a Room
+						</Button>
+						<Button color="default" to="/info" component={Link}>
+							Info
+						</Button>
+						<Button color="secondary" to="/create" component={Link}>
+							Create a Room
+						</Button>
+					</ButtonGroup>
+				) : (
+					<ButtonGroup disableElevation variant="contained" color="primary">
+						<Button color="primary" to="/join" component={Link}>
+							Join a Room
+						</Button>
+						<Button color="default" to="/info" component={Link}>
+							Info
+						</Button>
+						<Button color="secondary" to="/create" component={Link}>
+							Create a Room
+						</Button>
+					</ButtonGroup>
+				)}
+
 			</Grid>
 			</Grid>
 		);
